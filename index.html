@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>biochart</title>
+	    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawChart);
+
+			function drawChart() {
+				var data = google.visualization.arrayToDataTable([
+					['Doenças', 'Link', 'Número'],             
+					['EM'     , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/EM.txt' , 54],
+					['DMD'    , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/DMD.txt', 18],
+					['DM1'    , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/DM1.txt', 7 ],
+					['PV'     , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/PV.txt' , 2 ],
+					['VT'     , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/VT.txt' , 4 ],
+					['ES'     , 'https://raw.githubusercontent.com/bioradar/bioradar.github.io/master/resources/ES.txt' , 14]
+				]);
+
+				var view = new google.visualization.DataView(data);
+				view.setColumns([0, 2]);
+
+				var options = {
+					title: ''
+				};
+				var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+				chart.draw(view, options);
+
+				var selectHandler = function(e) {
+					var selectedItem = chart.getSelection()[0];
+
+					if(selectedItem) {
+						$.get(data.getValue(selectedItem['row'], 1 ), function(response) {
+							$("#result").text(response);
+						});
+					} else {
+							$("#result").text("");
+					}
+			    }
+			    // Add our selection handler.
+			    google.visualization.events.addListener(chart, 'select', selectHandler);
+			}
+		</script>
+</head>
+<body>
+    <div class="row">
+
+      <div class=" col s12 m3 l3"> 
+      </div>
+
+
+      <div class=" col s12 m6 l6"> 
+		<div id="chart_div" class="right-align" style="width: 800px; height: 600px;"></div>
+		<p class="range-field">
+	      <input type="range" id="test5" min="1" max="10" />
+	    </p>
+      </div>
+
+
+      <div class=" col s12 m3 l1"> 
+		<p id="result" class="center-align" ></p>
+      </div>
+
+
+    </div>
+
+</body>
+</html>
